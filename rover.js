@@ -3,9 +3,11 @@ var myRover = {
   direction: 'N'
 };
 
-var instructionsText = 'fffffrffffblffrfffffff';
+var instructionsText = 'fffffrffffblffrfffffffflfffbbf';
 var instructions = instructionsText.split('');
 var instructionsDisplay = [];
+var obstacleY = 8;
+var obstacleX = 1;
 
 for (var i = 0; i < instructions.length; i++) {
   if (instructions[i] == 'f') {
@@ -21,6 +23,13 @@ for (var i = 0; i < instructions.length; i++) {
 
 console.log("The current instructions are - " + instructions + " - which translate to:\n " + instructionsDisplay);
 executeInstructions(myRover, instructions);
+
+function checkObstacles(rover) {
+  if (rover.position[0] == obstacleY && rover.position[1] == obstacleX) {
+    console.log("Warning!! A canyon has been detected!");
+    return true;
+  }
+}
 
 function goForward(rover) {
   switch(rover.direction) {
@@ -50,7 +59,7 @@ function goForward(rover) {
       } break;
   }
 
-  console.log("New Rover Position: [" + rover.position[0] + ", " + rover.position[1] + "]");
+
 }
 
 function goBackwards(rover) {
@@ -80,8 +89,6 @@ function goBackwards(rover) {
         rover.position[1] -= 9;
       } break;
   }
-
-  console.log("New Rover Position: [" + rover.position[0] + ", " + rover.position[1] + "]");
 }
 
 function changeDirection(rover, whichDirection) {
@@ -116,8 +123,22 @@ function executeInstructions(rover, instructions) {
   for (var i = 0; i < instructions.length; i++) {
     if (instructions[i] == 'f') {
       goForward(myRover);
+      if (checkObstacles(rover) === true) {
+        if (rover.direction == 'N' || rover.direction == 'S') {
+          rover.position[0] -= 1;
+          break;
+        } else {
+          rover.position[1] -= 1;
+          break;
+        }
+      }
+      console.log("New Rover Position: [" + rover.position[0] + ", " + rover.position[1] + "]");
     } else if (instructions[i] == 'b') {
       goBackwards(myRover);
+      if (checkObstacles(rover) === true) {
+        break;
+      }
+      console.log("New Rover Position: [" + rover.position[0] + ", " + rover.position[1] + "]");
     } else {
       changeDirection(myRover, instructions[i]);
     }
